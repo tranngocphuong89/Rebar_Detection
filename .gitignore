@@ -1,0 +1,4 @@
+*.jpg
+checkpoint/*
+*.pyc
+*.pb

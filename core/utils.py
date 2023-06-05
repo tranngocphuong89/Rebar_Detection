@@ -15,7 +15,8 @@ import cv2
 import random
 import colorsys
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from core.config import cfg
 
 def read_class_names(class_file_name):
@@ -64,7 +65,7 @@ def image_preporcess(image, target_size, gt_boxes=None):
         return image_paded, gt_boxes
 
 
-def draw_bbox(image, bboxes, classes=read_class_names(cfg.YOLO.CLASSES), show_label=True):
+def draw_bbox(image, bboxes, classes=read_class_names(cfg.YOLO.CLASSES), show_label=False):
     """
     bboxes: [x_min, y_min, x_max, y_max, probability, cls_id] format coordinates.
     """

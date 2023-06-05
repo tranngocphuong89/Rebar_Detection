@@ -14,20 +14,22 @@
 import cv2
 import numpy as np
 import core.utils as utils
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from PIL import Image
 
 return_elements = ["input/input_data:0", "pred_sbbox/concat_2:0", "pred_mbbox/concat_2:0", "pred_lbbox/concat_2:0"]
 pb_file         = "./yolov3_96_coco.pb"
-image_path      = "./0C006B5C.jpg"
+image_path      = r"Z:\phuong\MQ\11_nha_may_thep\4_dataset\1_test/z4406163820638_4243e853619aff04fc805095d6fceb6f.jpg"
 num_classes     = 1
-input_size      = 544
+input_size      = 1280 # goc 544
 graph           = tf.Graph()
 
 original_image = cv2.imread(image_path)
 original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 original_image_size = original_image.shape[:2]
 image_data = utils.image_preporcess(np.copy(original_image), [input_size, input_size])
+
 image_data = image_data[np.newaxis, ...]
 
 return_tensors = utils.read_pb_return_tensors(graph, pb_file, return_elements)
@@ -44,6 +46,7 @@ pred_bbox = np.concatenate([np.reshape(pred_sbbox, (-1, 5 + num_classes)),
 print(pred_bbox)
 bboxes = utils.nms(pred_bbox, 0.45, method='soft-nms')
 bboxes = utils.postprocess_boxes(pred_bbox, original_image_size, input_size, 0.6)
+
 #bboxes = utils.nms(bboxes, 0.45, method='nms')
 image = utils.draw_bbox(original_image, bboxes)
 #image = Image.fromarray(image).resize((2666,2000),Image.ANTIALIAS)
